@@ -1,6 +1,6 @@
-<jsp:include page="templates/head.jsp"></jsp:include>
-<jsp:include page="templates/navbar.jsp"></jsp:include>
-<jsp:include page="templates/alert.jsp"></jsp:include>
+<%@include file="/templates/head.jsp" %>
+<%@include file="/templates/navbar.jsp" %>
+<%@include file="/templates/alert.jsp" %>
 
 <div id="login">
 
