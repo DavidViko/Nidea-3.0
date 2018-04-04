@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.ipartek.formacion.nidea.model.MaterialDAO;
 import com.ipartek.formacion.nidea.pojo.Alert;
 
 /**
@@ -26,7 +25,7 @@ public class LoginController extends HttpServlet {
 	private static final String USER = "admin";
 	private static final String PASS = "admin";
 
-	private static final int SESSION_EXPIRATION = 60 * 1; // 1 minuto
+	private static final int SESSION_EXPIRATION = 60 * 10; // 10 minuto
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -52,10 +51,6 @@ public class LoginController extends HttpServlet {
 			String password = request.getParameter("password");
 
 			if (USER.equalsIgnoreCase(usuario) && PASS.equals(password)) {
-
-				// enviar como atributo la lista de materiales
-				MaterialDAO dao = MaterialDAO.getInstance();
-				request.setAttribute("materiales", dao.getAll());
 
 				// guardar usuario en sesion
 				HttpSession session = request.getSession();

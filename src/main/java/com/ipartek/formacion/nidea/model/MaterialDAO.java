@@ -37,7 +37,7 @@ public class MaterialDAO {
 	 * 
 	 * @return ArrayList<Material> si no existen registros new ArrayList<Material>()
 	 */
-	public ArrayList<Material> getAll() {
+	public ArrayList<Material> getMateriales(String searchText) {
 
 		ArrayList<Material> lista = new ArrayList<Material>();
 		Connection con = null;
@@ -45,12 +45,14 @@ public class MaterialDAO {
 		ResultSet rs = null;
 
 		try {
-
+			System.out.println("searchText = " + searchText);
 			Class.forName("com.mysql.jdbc.Driver");
 			final String URL = "jdbc:mysql://192.168.0.42/spoty?user=alumno&password=alumno";
 			con = DriverManager.getConnection(URL);
-			String sql = "SELECT id, nombre, precio FROM material;";
-
+			String sql = "SELECT id, nombre, precio FROM spoty.material" + " WHERE nombre LIKE '%" + searchText
+					+ "%'ORDER BY id DESC LIMIT 500;";// WHERE
+			// nombre
+			// '%searchText%'
 			pst = con.prepareStatement(sql);
 			rs = pst.executeQuery();
 
