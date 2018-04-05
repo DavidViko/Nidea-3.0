@@ -3,6 +3,8 @@ package com.ipartek.formacion.nidea.controller.backoffice;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,38 +22,61 @@ import com.ipartek.formacion.nidea.pojo.Material;
 public class MaterialesBackController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private static final String VIEW_INDEX = "materiales/index.jsp";
+	private static final String VIEW_FORM = "materiales/form.jsp";
+
+	public static final int OP_MOSTRAR_FORMULARIO = 1;
+	public static final int OP_BUSQUEDA = 14;
+	public static final int OP_ELIMINAR = 13;
+	public static final int OP_GUARDAR = 2;
+
+	private RequestDispatcher dispatcher;
+	private Alert alert = null;
+	private MaterialDAO dao;
+
+	// parametros del material
+	private int id;
+	private String nombre;
+	private float precio;
+
+	// parametros comunes
+	private String search; // buscador por nombre material
+	private int op; // operacion a realizar
+
+	/**
+	 * Para cargar el DAO segun se inicia el servlet. No se hace por cada peticion
+	 * get o post
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		dao = MaterialDAO.getInstance();
+	}
+
+	/**
+	 * Se ejecuta cuando paramos el servidor de aplicaciones (Tomcat)
+	 */
+	@Override
+	public void destroy() {
+		super.destroy();
+		dao = null;
+	}
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		System.out.println("Antes de ejecutar doGet o do Post");
+		super.service(request, response);// llama al doGet o doPost
+		System.out.println("Despues de ejecutar doGet o do Post");
+	}
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		ArrayList<Material> materiales = new ArrayList<Material>();
-		Alert alert = null;
-		String view = "";
-		String search = "";
-		try {
-			search = request.getParameter("search");
-			System.out.println("Filtro busqueda " + search);
-			if (search == null) {
-				search = "";
-			}
-
-			// enviar como atributo la lista de materiales
-			MaterialDAO dao = MaterialDAO.getInstance();
-			materiales = dao.getMateriales(search);
-			view = "materiales/index.jsp";
-		} catch (Exception e) {
-			alert = new Alert();
-			e.printStackTrace();
-
-		} finally {
-			request.setAttribute("alert", alert);
-			request.setAttribute("materiales", materiales);
-			request.getRequestDispatcher(view).forward(request, response);
-		}
-
+		doProcess(request, response);
 	}
 
 	/**
@@ -60,7 +85,120 @@ public class MaterialesBackController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		doGet(request, response);
+		doProcess(request, response);
+	}
+
+	/**
+	 * Unimos las peticiones doGet y doPost, para que se haga lo mismo desde ambas
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 * @throws ServletException
+	 */
+	private void doProcess(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		try {
+			recogerParametros(request);
+
+			switch (this.op) {
+			case OP_MOSTRAR_FORMULARIO:
+				mostrarFormulario(request);
+				break;
+			case OP_ELIMINAR:
+				eliminar(request);
+				break;
+			case OP_BUSQUEDA:
+				buscar(request);
+				break;
+			case OP_GUARDAR:
+				guardar(request);
+				break;
+			default:
+				listar(request);
+				break;
+			}
+
+			this.op = 0;
+
+			// Se quita de aqui para pasarlo al init.
+			// MaterialDAO dao = MaterialDAO.getInstance();
+
+			// dispatcher = request.getRequestDispatcher(VIEW_INDEX);
+		} catch (Exception e) {
+			alert = new Alert();
+			e.printStackTrace();
+
+		} finally {
+			request.setAttribute("alert", alert);
+			dispatcher.forward(request, response);
+		}
+
+	}
+
+	private void guardar(HttpServletRequest request) {
+		alert = new Alert("Guardado", Alert.TIPO_PRIMARY);
+
+	}
+
+	private void buscar(HttpServletRequest request) {
+		alert = new Alert("Busqueda para: " + search, Alert.TIPO_PRIMARY);
+		ArrayList<Material> materiales = new ArrayList<Material>();
+		materiales = dao.buscar(search);
+		request.setAttribute("materiales", materiales);
+		dispatcher = request.getRequestDispatcher(VIEW_INDEX);
+
+	}
+
+	private void eliminar(HttpServletRequest request) {
+		alert = new Alert("Borrado", Alert.TIPO_DANGER);
+
+	}
+
+	private void mostrarFormulario(HttpServletRequest request) {
+		Material material = new Material();
+		if (id > -1) {
+			alert = new Alert("Mostramos Detalle id:" + id, Alert.TIPO_WARNING);
+			material.setId(id);
+		} else {
+			alert = new Alert("Nuevo Producto", Alert.TIPO_WARNING);
+		}
+		request.setAttribute("material", material);
+		dispatcher = request.getRequestDispatcher(VIEW_FORM);
+
+	}
+
+	private void listar(HttpServletRequest request) {
+		ArrayList<Material> materiales = new ArrayList<Material>();
+		materiales = dao.getAll();
+		request.setAttribute("materiales", materiales);
+		dispatcher = request.getRequestDispatcher(VIEW_INDEX);
+
+	}
+
+	/**
+	 * Recogemos todos los posibles metodos emviados
+	 * 
+	 * @param request
+	 */
+	private void recogerParametros(HttpServletRequest request) {
+		if (request.getParameter("op") != null) {
+			op = Integer.parseInt(request.getParameter("op"));
+		}
+		search = (request.getParameter("search") != null) ? request.getParameter("search") : "";
+
+		if (request.getParameter("id") != null) {
+			id = Integer.parseInt(request.getParameter("id"));
+		}
+
+		if (request.getParameter("nombre") != null) {
+			nombre = request.getParameter("nombre");
+		}
+
+		if (request.getParameter("precio") != null) {
+			precio = Float.parseFloat(request.getParameter("precio"));
+		}
 	}
 
 }

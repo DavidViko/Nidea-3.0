@@ -33,7 +33,7 @@ public class MaterialesController extends HttpServlet {
 		try {
 			// enviar como atributo la lista de materiales
 			MaterialDAO dao = MaterialDAO.getInstance();
-			materiales = dao.getMateriales("");
+			materiales = dao.getAll();
 			view = "views/materiales/index.jsp";
 		} catch (Exception e) {
 			alert = new Alert();

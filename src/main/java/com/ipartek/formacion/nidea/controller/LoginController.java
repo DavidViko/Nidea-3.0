@@ -68,7 +68,6 @@ public class LoginController extends HttpServlet {
 				view = "backoffice/index.jsp";
 				alert = new Alert("Ongi Etorri", Alert.TIPO_PRIMARY);
 			} else {
-
 				view = "login.jsp";
 				alert = new Alert("Credenciales incorrectas, prueba de nuevo");
 			}

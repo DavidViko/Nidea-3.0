@@ -76,7 +76,7 @@ public class MesaController extends HttpServlet {
 
 		// enviar atributos a la JSP
 		request.setAttribute("mesa", m);
-		request.setAttribute("materiales", dao.getMateriales(""));
+		request.setAttribute("materiales", dao.getAll());
 
 		// ir a la JSP
 		request.getRequestDispatcher("mesa.jsp").forward(request, response);
