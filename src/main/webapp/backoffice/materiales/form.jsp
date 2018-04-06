@@ -4,6 +4,10 @@
 <%@include file="/templates/alert.jsp" %>
 
 ${material}
+${material.id}
+${material.nombre}
+${material.precio}
+
 
 <div class="container">
         <div class="row centered-form">
@@ -13,7 +17,7 @@ ${material}
 			    		<h3 class="panel-title"></h3>
 			 			</div>
 			 			<div class="panel-body">
-			    		<form role="form">
+			    		<form role="form" action="backoffice/materiales">
 			    			<div class="form-group">
 			    				<input type="number" name="id" class="form-control input-sm" placeholder="id" value=${material.id}>
 			    			</div>
@@ -25,17 +29,19 @@ ${material}
 			    			</div>
 			    			<div class="row">
 			    				<c:if test="${material.id<0}">
-			    					<a class="btn btn-success btn-block"href="backoffice/materiales?id=${material.id}&nombre=${material.id}&precio=${material.precio}<%=MaterialesBackController.OP_GUARDAR%>">CREAR</a>
+			    					<input type="hidden" name="op" value="<%=MaterialesBackController.OP_GUARDAR%>">
+			    					<button type="submit" class="btn btn-primary btn-lg btn-block">CREAR</button>
 			    				</c:if>
 			    			
-<%-- 			    				<c:if test="${material.id>=0}"> --%>
+ 			    				<c:if test="${material.id>=0}"> 
 				    				<div class="col-xs-6 col-sm-6 col-md-6">
-				    					<a class="btn btn-info btn-block" href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_GUARDAR%>">MODIFICAR</a>
+				    					<input type="hidden" name="op" value="<%=MaterialesBackController.OP_GUARDAR%>"> 
+				    					<input class="btn btn-info btn-block" type="submit" value ="MODIFICAR">
 				    				</div>
 				    				<div class="col-xs-6 col-sm-6 col-md-6">
 				    					<a class="btn btn-danger btn-block" href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_ELIMINAR%>">ELIMINAR</a>
 				    				</div>
-<%-- 				    			</c:if> --%>
+ 				    			</c:if>
 			    			</div>
 			    		</form>
 			    	</div>
@@ -43,8 +49,6 @@ ${material}
     		</div>
     	</div>
     </div>
-
-
 
 
 <%@include file="/templates/footer.jsp" %>

@@ -100,6 +100,7 @@ public class MaterialesBackController extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
+			alert = null;
 			recogerParametros(request);
 
 			switch (this.op) {
@@ -120,8 +121,6 @@ public class MaterialesBackController extends HttpServlet {
 				break;
 			}
 
-			this.op = 0;
-
 			// Se quita de aqui para pasarlo al init.
 			// MaterialDAO dao = MaterialDAO.getInstance();
 
@@ -131,6 +130,8 @@ public class MaterialesBackController extends HttpServlet {
 			e.printStackTrace();
 
 		} finally {
+			op = -1;
+
 			request.setAttribute("alert", alert);
 			dispatcher.forward(request, response);
 		}
@@ -138,29 +139,49 @@ public class MaterialesBackController extends HttpServlet {
 	}
 
 	private void guardar(HttpServletRequest request) {
-		alert = new Alert("Guardado", Alert.TIPO_PRIMARY);
+		Material material = new Material();
+		material.setId(id);
+		material.setNombre(nombre);
+		material.setPrecio(precio);
 
+		if (id == -1) {
+			if (dao.save(material)) {
+				alert = new Alert("Material creado");
+			}
+
+		} else {
+			alert = new Alert("Modificado material con id " + id, Alert.TIPO_PRIMARY);
+			// UPDATE `nidea`.`material` SET `nombre`='cerveza' WHERE `id`=8;
+		}
+		request.setAttribute("material", material);
+		dispatcher = request.getRequestDispatcher(VIEW_FORM);
 	}
 
 	private void buscar(HttpServletRequest request) {
 		alert = new Alert("Busqueda para: " + search, Alert.TIPO_PRIMARY);
 		ArrayList<Material> materiales = new ArrayList<Material>();
-		materiales = dao.buscar(search);
+		materiales = dao.buscarNombre(search);
 		request.setAttribute("materiales", materiales);
 		dispatcher = request.getRequestDispatcher(VIEW_INDEX);
 
 	}
 
 	private void eliminar(HttpServletRequest request) {
-		alert = new Alert("Borrado", Alert.TIPO_DANGER);
-
+		if (dao.delete(id)) {
+			alert = new Alert("Material Eliminado id " + id, Alert.TIPO_PRIMARY);
+		} else {
+			alert = new Alert("Error Eliminando, sentimos las molestias ", Alert.TIPO_WARNING);
+		}
+		listar(request);
 	}
 
 	private void mostrarFormulario(HttpServletRequest request) {
 		Material material = new Material();
 		if (id > -1) {
 			alert = new Alert("Mostramos Detalle id:" + id, Alert.TIPO_WARNING);
-			material.setId(id);
+			material = dao.getById(id);
+			System.out.println(material);
+
 		} else {
 			alert = new Alert("Nuevo Producto", Alert.TIPO_WARNING);
 		}
