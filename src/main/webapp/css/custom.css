@@ -23,6 +23,8 @@ svg{
 	margin: auto;
 }
 td a{
-	color:yellow;
 	text-decoration:none;
+}
+td.bajo, a.bajo{
+	color:black;
 }

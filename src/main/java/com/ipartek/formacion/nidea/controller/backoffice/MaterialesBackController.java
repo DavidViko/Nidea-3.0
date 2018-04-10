@@ -1,6 +1,7 @@
 package com.ipartek.formacion.nidea.controller.backoffice;
 
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -33,6 +34,8 @@ public class MaterialesBackController extends HttpServlet {
 	private RequestDispatcher dispatcher;
 	private Alert alert = null;
 	private MaterialDAO dao;
+
+	private String precioString;
 
 	// parametros del material
 	private int id;
@@ -140,30 +143,51 @@ public class MaterialesBackController extends HttpServlet {
 
 	private void guardar(HttpServletRequest request) {
 		Material material = new Material();
-		material.setId(id);
-		material.setNombre(nombre);
-		material.setPrecio(precio);
-
-		if (id == -1) {
-			if (dao.save(material)) {
-				alert = new Alert("Material creado");
+		try {
+			material.setId(id);
+			material.setNombre(nombre);
+			precio = Float.parseFloat(precioString);
+			material.setPrecio(precio);
+			if (precio < 0) {
+				alert = new Alert("ERROR. El precio debe ser mayor que 0", Alert.TIPO_WARNING);
+			} else if (nombre.equals("")) {
+				alert = new Alert("ERROR. El nombre no puede estar vacio", Alert.TIPO_WARNING);
+			} else if (nombre.length() > 45) {
+				alert = new Alert("ERROR. El nombre es demasiado largo", Alert.TIPO_WARNING);
+			} else {
+				try {
+					if (id == -1) {
+						if (dao.save(material)) {
+							alert = new Alert("Material creado", Alert.TIPO_PRIMARY);
+						} else {
+							alert = new Alert("ERROR. No se puedo guardar", Alert.TIPO_WARNING);
+						}
+					} else {
+						if (dao.save(material)) {
+							alert = new Alert("Modificado material con id " + id, Alert.TIPO_PRIMARY);
+						} else {
+							alert = new Alert("ERROR. No se puedo modificar", Alert.TIPO_WARNING);
+						}
+					}
+				} catch (SQLIntegrityConstraintViolationException e) {
+					alert = new Alert("ERROR. El material ya existe", Alert.TIPO_WARNING);
+				}
 			}
-
-		} else {
-			alert = new Alert("Modificado material con id " + id, Alert.TIPO_PRIMARY);
-			// UPDATE `nidea`.`material` SET `nombre`='cerveza' WHERE `id`=8;
+		} catch (NumberFormatException e) {
+			alert = new Alert("PRECIO ERRONEO. No puede contener letras", Alert.TIPO_WARNING);
 		}
+
 		request.setAttribute("material", material);
 		dispatcher = request.getRequestDispatcher(VIEW_FORM);
+
 	}
 
 	private void buscar(HttpServletRequest request) {
 		alert = new Alert("Busqueda para: " + search, Alert.TIPO_PRIMARY);
 		ArrayList<Material> materiales = new ArrayList<Material>();
-		materiales = dao.buscarNombre(search);
+		materiales = dao.getByName(search);
 		request.setAttribute("materiales", materiales);
 		dispatcher = request.getRequestDispatcher(VIEW_INDEX);
-
 	}
 
 	private void eliminar(HttpServletRequest request) {
@@ -180,7 +204,6 @@ public class MaterialesBackController extends HttpServlet {
 		if (id > -1) {
 			alert = new Alert("Mostramos Detalle id:" + id, Alert.TIPO_WARNING);
 			material = dao.getById(id);
-			System.out.println(material);
 
 		} else {
 			alert = new Alert("Nuevo Producto", Alert.TIPO_WARNING);
@@ -207,6 +230,7 @@ public class MaterialesBackController extends HttpServlet {
 		if (request.getParameter("op") != null) {
 			op = Integer.parseInt(request.getParameter("op"));
 		}
+
 		search = (request.getParameter("search") != null) ? request.getParameter("search") : "";
 
 		if (request.getParameter("id") != null) {
@@ -214,12 +238,11 @@ public class MaterialesBackController extends HttpServlet {
 		}
 
 		if (request.getParameter("nombre") != null) {
-			nombre = request.getParameter("nombre");
+			nombre = request.getParameter("nombre").trim();
 		}
 
 		if (request.getParameter("precio") != null) {
-			precio = Float.parseFloat(request.getParameter("precio"));
+			precioString = request.getParameter("precio");
 		}
 	}
-
 }

@@ -27,7 +27,7 @@ public class LogoutController extends HttpServlet {
 		session.invalidate();
 
 		// request.getRequestDispatcher("login.jsp").forward(request, response);
-		// Para hacer redireccion en vez de que
+		// Para hacer redireccion
 		response.sendRedirect("login");
 
 	}

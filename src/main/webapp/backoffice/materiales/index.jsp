@@ -40,19 +40,19 @@
 				<c:choose>
 				
 					<c:when test = "${material.precio>=6.0 && material.precio<25.0}">
-           	 			<td style='color:blue'> ${material.id}</td>
-           	 			<td style='color:blue'> <a href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_MOSTRAR_FORMULARIO%>">${material.nombre}</a></td>
-           	 			<td style='color:blue'> ${material.precio} &euro;</td>	
+           	 			<td class="text-primary"> ${material.id}</td>
+           	 			<td> <a class="text-primary" href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_MOSTRAR_FORMULARIO%>">${material.nombre}</a></td>
+           	 			<td class="text-primary"> ${material.precio} &euro;</td>	
         			</c:when>
         			<c:when test = "${material.precio>=25.0}">
-        				<td class='text-danger'> ${material.id}</td>
-           	 			<td class='text-danger'> <a href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_MOSTRAR_FORMULARIO%>">${material.nombre}</a></td>
-           	 			<td class='text-danger'> ${material.precio} &euro;</td>
+        				<td class="text-danger"> ${material.id}</td>
+           	 			<td> <a class="text-danger" href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_MOSTRAR_FORMULARIO%>">${material.nombre}</a></td>
+           	 			<td class="text-danger"> ${material.precio} &euro;</td>
         			</c:when>	
 					<c:otherwise>
-            			<td>${material.id}</td>
-            			<td><a href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_MOSTRAR_FORMULARIO%>">${material.nombre}</a></td>
-            			<td>${material.precio} &euro;</td>
+            			<td class='bajo'>${material.id}</td>
+            			<td class='bajo'><a class='bajo' href="backoffice/materiales?id=${material.id}&op=<%=MaterialesBackController.OP_MOSTRAR_FORMULARIO%>">${material.nombre}</a></td>
+            			<td class='bajo'>${material.precio} &euro;</td>
          			</c:otherwise>
 				</c:choose>
 				
