@@ -133,7 +133,7 @@ public class MaterialDAO implements Persistible<Material> {
 		return resul;
 	}
 
-	private boolean modificar(Material pojo) {
+	private boolean modificar(Material pojo) throws SQLIntegrityConstraintViolationException {
 		boolean resul = false;
 
 		String sql = "UPDATE `material` SET `nombre`=?,`precio`=? WHERE  `id`=?;";
@@ -146,6 +146,8 @@ public class MaterialDAO implements Persistible<Material> {
 			if (affectedRows == 1) {
 				resul = true;
 			}
+		} catch (SQLIntegrityConstraintViolationException e) {
+			throw new SQLIntegrityConstraintViolationException();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -173,7 +175,7 @@ public class MaterialDAO implements Persistible<Material> {
 		} catch (SQLIntegrityConstraintViolationException e) {
 			throw new SQLIntegrityConstraintViolationException();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 
 		return resul;

@@ -18,7 +18,7 @@
 			 	<div class="panel-body">
 			    	<form role="form" action="backoffice/materiales">
 			    		<div class="form-group">
-			    			<input type="number" name="id" class="form-control input-sm" placeholder="id" value=${material.id}>
+			    			<input type="number" name="id" class="form-control input-sm" readonly placeholder="id" value=${material.id}>
 			    		</div>
 			    		<div class="form-group">
 			    			<input type="text" name="nombre"class="form-control input-sm" placeholder="Nombre de material" value=${material.nombre}>

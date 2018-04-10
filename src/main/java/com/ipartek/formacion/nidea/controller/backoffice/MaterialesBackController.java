@@ -68,9 +68,7 @@ public class MaterialesBackController extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("Antes de ejecutar doGet o do Post");
 		super.service(request, response);// llama al doGet o doPost
-		System.out.println("Despues de ejecutar doGet o do Post");
 	}
 
 	/**
@@ -139,7 +137,7 @@ public class MaterialesBackController extends HttpServlet {
 			dispatcher.forward(request, response);
 		}
 
-	}
+	}// fin doProcess
 
 	private void guardar(HttpServletRequest request) {
 		Material material = new Material();
@@ -155,24 +153,22 @@ public class MaterialesBackController extends HttpServlet {
 			} else if (nombre.length() > 45) {
 				alert = new Alert("ERROR. El nombre es demasiado largo", Alert.TIPO_WARNING);
 			} else {
-				try {
-					if (id == -1) {
-						if (dao.save(material)) {
-							alert = new Alert("Material creado", Alert.TIPO_PRIMARY);
-						} else {
-							alert = new Alert("ERROR. No se puedo guardar", Alert.TIPO_WARNING);
-						}
+				if (id == -1) {
+					if (dao.save(material)) {
+						alert = new Alert("Material creado", Alert.TIPO_PRIMARY);
 					} else {
-						if (dao.save(material)) {
-							alert = new Alert("Modificado material con id " + id, Alert.TIPO_PRIMARY);
-						} else {
-							alert = new Alert("ERROR. No se puedo modificar", Alert.TIPO_WARNING);
-						}
+						alert = new Alert("ERROR. No se puedo guardar", Alert.TIPO_WARNING);
 					}
-				} catch (SQLIntegrityConstraintViolationException e) {
-					alert = new Alert("ERROR. El material ya existe", Alert.TIPO_WARNING);
+				} else {
+					if (dao.save(material)) {
+						alert = new Alert("Modificado material con id " + id, Alert.TIPO_PRIMARY);
+					} else {
+						alert = new Alert("ERROR. No se puedo modificar", Alert.TIPO_WARNING);
+					}
 				}
 			}
+		} catch (SQLIntegrityConstraintViolationException e) {
+			alert = new Alert("ERROR. El material ya existe", Alert.TIPO_WARNING);
 		} catch (NumberFormatException e) {
 			alert = new Alert("PRECIO ERRONEO. No puede contener letras", Alert.TIPO_WARNING);
 		}
@@ -180,7 +176,7 @@ public class MaterialesBackController extends HttpServlet {
 		request.setAttribute("material", material);
 		dispatcher = request.getRequestDispatcher(VIEW_FORM);
 
-	}
+	}// fin guardar
 
 	private void buscar(HttpServletRequest request) {
 		alert = new Alert("Busqueda para: " + search, Alert.TIPO_PRIMARY);
@@ -197,7 +193,7 @@ public class MaterialesBackController extends HttpServlet {
 			alert = new Alert("Error Eliminando, sentimos las molestias ", Alert.TIPO_WARNING);
 		}
 		listar(request);
-	}
+	}// fin buscar
 
 	private void mostrarFormulario(HttpServletRequest request) {
 		Material material = new Material();
@@ -210,15 +206,13 @@ public class MaterialesBackController extends HttpServlet {
 		}
 		request.setAttribute("material", material);
 		dispatcher = request.getRequestDispatcher(VIEW_FORM);
-
-	}
+	}// finmostrarFormulario
 
 	private void listar(HttpServletRequest request) {
 		ArrayList<Material> materiales = new ArrayList<Material>();
 		materiales = dao.getAll();
 		request.setAttribute("materiales", materiales);
 		dispatcher = request.getRequestDispatcher(VIEW_INDEX);
-
 	}
 
 	/**
