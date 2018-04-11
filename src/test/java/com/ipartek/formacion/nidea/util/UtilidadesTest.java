@@ -1,4 +1,4 @@
-package com.ipartek.formacion.nidea.ejemplos;
+package com.ipartek.formacion.nidea.util;
 
 import static org.junit.Assert.assertEquals;
 

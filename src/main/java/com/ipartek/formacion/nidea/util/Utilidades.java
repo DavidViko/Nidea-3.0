@@ -1,4 +1,4 @@
-package com.ipartek.formacion.nidea.ejemplos;
+package com.ipartek.formacion.nidea.util;
 
 public class Utilidades {
 
@@ -13,13 +13,10 @@ public class Utilidades {
 	 * @return en caso de null retorna cadena vacia ""
 	 */
 	public static String limpiarEspacios(String cadena) {
-		String cadenaLimpia;
+		String cadenaLimpia = "";
 		if (cadena != null) {
 			cadenaLimpia = cadena.replaceAll(" +", " ").trim();
-		} else {
-			cadenaLimpia = "";
 		}
-
 		return cadenaLimpia;
 	}
 }
