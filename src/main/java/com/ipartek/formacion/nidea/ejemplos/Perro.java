@@ -20,5 +20,4 @@ public class Perro implements Ordenable {
 	public int getValor() {
 		return getVacunas();
 	}
-
 }

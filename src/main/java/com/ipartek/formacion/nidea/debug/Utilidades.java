@@ -9,7 +9,7 @@ public class Utilidades {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
 		Date date = new Date();
 		String dateString = sdf.format(date);
-		String fecha = dateString + " VIERNESSSSSSS";
+		String fecha = dateString;
 
 		return fecha;
 	}

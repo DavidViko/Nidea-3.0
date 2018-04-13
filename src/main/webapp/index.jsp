@@ -6,6 +6,11 @@
 	// varias sentencias 
 	String nombre = "pepe";
 	String hora = "10:78";
+	
+	//lanza adrede una excepcion nullPointerException
+	// llama a la pagina de error
+	String nulo = null;
+	//nulo.length();
 
 %>
 
@@ -15,4 +20,4 @@
 <a href="generar-mesa"> ¿Quieres Comprar una Mesa ?</a>
 
 
-<jsp:include page="templates/footer.jsp"></jsp:include>
+<%@include file="templates/footer.jsp" %>

@@ -8,15 +8,15 @@ public class PaisesTest {
 
 	ArrayList<String> listaPaises = new ArrayList<String>() {
 		{
-			add("A");
-			add("B");
-			add("C");
+			add("España");
+			add("Francia");
+			add("Portugal");
 		}
 	};
 
 	@Test
 	public void test() {
-		listaPaises.add(3, "Alemania");
+		listaPaises.add(1, "Alemania");
 	}
 
 }
