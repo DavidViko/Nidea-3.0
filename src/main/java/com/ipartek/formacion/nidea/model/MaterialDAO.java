@@ -62,8 +62,7 @@ public class MaterialDAO implements Persistible<Material> {
 	}
 
 	/**
-	 * Muestra listado de elementos que contengan el parametro. Si no encuentra
-	 * devuelve null
+	 * Muestra listado de elementos que contengan el parametro. Si no encuentra devuelve null
 	 * 
 	 * @param search
 	 *            Patron de busqueda por nombre
@@ -71,8 +70,7 @@ public class MaterialDAO implements Persistible<Material> {
 	 */
 	public ArrayList<Material> getByName(String search) {
 		ArrayList<Material> lista = new ArrayList<Material>();
-		String sql = "SELECT `id`, `nombre`, `precio` FROM `material`"
-				+ " WHERE `nombre` LIKE ? ORDER BY id DESC LIMIT 500;";
+		String sql = "SELECT `id`, `nombre`, `precio` FROM `material`" + " WHERE `nombre` LIKE ? ORDER BY id DESC LIMIT 500;";
 		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql);) {
 			pst.setString(1, "%" + search + "%");
 			try (ResultSet rs = pst.executeQuery();) {
@@ -163,8 +161,7 @@ public class MaterialDAO implements Persistible<Material> {
 		boolean resul = false;
 
 		String sql = "INSERT INTO `material` (`nombre`, `precio`) VALUES (?, ?);";
-		try (Connection con = ConnectionManager.getConnection();
-				PreparedStatement pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
+		try (Connection con = ConnectionManager.getConnection(); PreparedStatement pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);) {
 			pst.setString(1, pojo.getNombre());
 			pst.setFloat(2, pojo.getPrecio());
 
@@ -235,5 +232,4 @@ public class MaterialDAO implements Persistible<Material> {
 		}
 		return m;
 	}
-
 }

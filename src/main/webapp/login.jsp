@@ -29,4 +29,4 @@
     </form>
 
 </div>
-<jsp:include page="templates/footer.jsp"></jsp:include>
+<%@include file="templates/footer.jsp" %>

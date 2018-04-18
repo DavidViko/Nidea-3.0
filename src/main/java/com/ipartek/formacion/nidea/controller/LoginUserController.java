@@ -37,8 +37,8 @@ public class LoginUserController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String usuario = request.getParameter("usuario");
-			int id = Integer.parseInt(request.getParameter("id"));
-			Usuario user = new Usuario(id, usuario);
+			String password = request.getParameter("password");
+			Usuario user = new Usuario(usuario, password);
 
 			// guardar usuario en sesion
 			HttpSession session = request.getSession();
